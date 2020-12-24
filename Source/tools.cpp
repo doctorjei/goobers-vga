@@ -1,5 +1,12 @@
-#include <conio.h>
+#include <cstring>
+#include <iostream>
+#include <fstream>
+//#include <conio.h>
+#include <pc.h>
 #include "mouse.h"
+#include "tools.h"
+#include "vga.h"
+#include "errors.h"
 
 extern mice mouse;
 extern pal *palette;
@@ -17,6 +24,8 @@ short int sx = -1, sy = -1;
 short int cplay = 0, nplay = 1;
 char gameover = 0;
 
+animation *firstani, *lastani, *ani;
+
 animation::animation(picture *p, short int x1, short int y1, short int col, char val, char *chg)
 {
  pic = p;
@@ -31,9 +40,9 @@ void quit(windows *win)
  char answerstring[2];
 
  video.wipe(0);
- cout << "\r\nQuit? [y/N] ";
- cin.get(answerstring, 2, '\n');
- cin.ignore(80, '\n');
+ std::cout << "\r\nQuit? [y/N] ";
+ std::cin.get(answerstring, 2, '\n');
+ std::cin.ignore(80, '\n');
  switch (answerstring[0])
  {
   case 'y':
@@ -59,9 +68,9 @@ void freememm()
 
 long loadpalette(char *file, long seek, pal *colors)
 {
- ifstream infile;
+ std::ifstream infile;
 
- infile.open(file, ios::binary);
+ infile.open(file, std::ifstream::binary);
  if (!infile) {infile.close(); file_error(file);}
  infile.seekg(seek);
  if (!infile.read((unsigned char *)colors, 768))
@@ -404,9 +413,9 @@ void getinfo()
  char inputstr[25];
  gameover = 0;
  mode(0x10);
- cout << "Number of players: ";
- cin.get(inputstr, 25, '\n');
- cin.ignore(80, '\n');
+ std::cout << "Number of players: ";
+ std::cin.get(inputstr, 25, '\n');
+ std::cin.ignore(80, '\n');
  nplay = atoi(inputstr);
  if (nplay > 4) nplay = 4;
  if (nplay < 2) nplay = 2;
@@ -467,4 +476,14 @@ void fontwrite(screen *destin, unsigned char *text, unsigned char fg,
   text = text+1;
   if (*text == '\r') { xp = x; yp = yp + 10; text = text+1;}
  }
+}
+
+void randomize()
+{
+ srand48(*internalclock);
+}
+
+long random(long x)
+{
+    return lrand48() % x;
 }

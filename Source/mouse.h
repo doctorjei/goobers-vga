@@ -1,4 +1,6 @@
 #pragma once
+#include <fstream>
+#include "picture.h"
 
 class mice
 {

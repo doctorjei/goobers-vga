@@ -1,7 +1,9 @@
-#include <string.h>
+#include <fstream>
+#include <cstring>
 #include "screen.h"
 #include "mouse.h"
 #include "window.h"
+#include "errors.h"
 
 extern mice mouse;
 extern screen video;
@@ -11,18 +13,18 @@ windows menu, tools;
 
 windows::windows()
 {
- title = NULL;
- object = firstobject = lastobject = NULL;
+ title = nullptr;
+ object = firstobject = lastobject = nullptr;
  down = 0;
 }
 
 void windows::getdata(char *file, long seekpos)
 {
- ifstream infile;
+ std::ifstream infile;
  char statuschar = 0;
  char tmp[1024] = "";
 
- infile.open(file, ios::binary);
+ infile.open(file, std::ifstream::binary);
  infile.seekg(seekpos);
  if (!infile) file_error(file);
  if (!(infile.read((char *) &x, 2) &&
@@ -32,7 +34,7 @@ void windows::getdata(char *file, long seekpos)
  infile.ignore(1024, '\0');
  seekpos = infile.tellg();
  infile.close();
- if ((title = (char *)malloc(strlen(tmp) + 1)) == NULL) memerr(5);
+ if ((title = (char *)malloc(strlen(tmp) + 1)) == nullptr) memerr(5);
  strcpy(title, tmp);
  seekpos = graphic.readimage(file, seekpos);
  if (!background.allocate()) {infile.close(); file_error(file);}
@@ -41,13 +43,13 @@ void windows::getdata(char *file, long seekpos)
  background.frames = 1;
  while (1)
  {
-  infile.open(file, ios::binary);
+  infile.open(file, std::ifstream::binary);
   infile.seekg(seekpos);
   if (!infile.read(&statuschar, 1)) {infile.close(); file_error(file);}
   if (statuschar == '\0') break;
   object = new objects;
-  object->next = object->previous = NULL;
-  if (firstobject == NULL) firstobject = lastobject = object;
+  object->next = object->previous = nullptr;
+  if (firstobject == nullptr) firstobject = lastobject = object;
   else
   {
    lastobject->next = object;
@@ -62,7 +64,7 @@ void windows::getdata(char *file, long seekpos)
   infile.ignore(1024, '\0');
   seekpos = infile.tellg();
   infile.close();
-  if ((object->text = (char *)malloc(strlen(tmp) + 1)) == NULL) memerr(5);
+  if ((object->text = (char *)malloc(strlen(tmp) + 1)) == nullptr) memerr(5);
   strcpy(object->text, tmp);
   seekpos = object->image.readimage(file, seekpos);
   object->currentframe = 0;
@@ -76,7 +78,7 @@ void windows::display(screen &dest)
 {
  graphic.addimage(x, y, 0, dest, 0);
  object = firstobject;
- while (object != NULL)
+ while (object != nullptr)
  {
   object->image.addimage(x + object->xpos, y + object->ypos,
   object->currentframe, dest, 0);
@@ -92,7 +94,7 @@ void windows::shutdown()
  background.freepicture();
  free(title);
  nextobject = object = firstobject;
- while (object != NULL)
+ while (object != nullptr)
  {
   free(object->text);
 
@@ -101,14 +103,14 @@ void windows::shutdown()
   delete object;
   object = nextobject;
  }
- firstobject = object = lastobject = NULL;
+ firstobject = object = lastobject = nullptr;
 }
 
 void windows::checkbuttons()
 {
  object = firstobject;
 
- while (object != NULL)
+ while (object != nullptr)
  {
   if (mouse.x >= object->xpos + x &&
       mouse.x < object->image.xlength + x + object->xpos &&
@@ -120,7 +122,7 @@ void windows::checkbuttons()
     if (mouse.buttoncheck(object->execution) == 1)
     {
      object->pressed = -1;
-     if (object->function != NULL) object->function(this);
+     if (object->function != nullptr) object->function(this);
     } else object->pressed = 0;
    }
   else object->pressed = 0;

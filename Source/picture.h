@@ -1,4 +1,5 @@
 #pragma once
+#include "screen.h"
 
 struct picture
 {
@@ -18,4 +19,4 @@ struct picture
  short int allocate();
  long readimage(char *filename, long seek);
  void freepicture();
-}
+};

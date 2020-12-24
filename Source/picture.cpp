@@ -1,5 +1,8 @@
-#include <alloc.h>
+#include <cstdlib>
+#include <cstring>
+#include <fstream>
 #include "picture.h"
+#include "errors.h"
 
 picture gameblock, goober, ns, nes, n, ne, nnw, n2, nne, ne2, font;
 
@@ -170,18 +173,20 @@ void picture::rotateimage(short int times, picture &dest)
 
 void picture::copyto(picture &dest)
 {
- _fmemcpy(dest.data, data, xlength * ylength);
+ memcpy(dest.data, data, xlength * ylength);
+// _fmemcpy(dest.data, data, xlength * ylength);
 }
 
 short int picture::allocate()
 {
  long datasize = (long)xlength * ylength * frames;
 
- if (datasize <= 0xFFFF)
-   if ((data = (char *)malloc(datasize)) == NULL) return(0);
-   else;
- else
-   if ((data = (char *)farmalloc(datasize)) == NULL) return(0);
+// if (datasize <= 0xFFFF)
+   if ((data = (char *)malloc(datasize)) == NULL) // Hopefully works in 16-bit mode?? farmalloc is gone...
+     return(0);
+//   else;
+// else
+//   if ((data = (char *)farmalloc(datasize)) == NULL) return(0);
  return(1);
 }
 
@@ -189,9 +194,9 @@ long picture::readimage(char *filename, long seek)
 {
  long datasize;
  unsigned char *pnt;
- ifstream infile;
+ std::ifstream infile;
 
- infile.open(filename, ios::binary);
+ infile.open(filename, std::ifstream::binary);
  if (!infile) file_error(filename);
  if (!infile.seekg(seek)) file_error(filename);
  if (!((infile.read((char *)&xlength, 2)) &&
@@ -218,5 +223,5 @@ long picture::readimage(char *filename, long seek)
 void picture::freepicture()
 {
  if ((long) xlength * ylength * frames <= 0xFFFF) free(data);
- else farfree(data);
+ else free(data);
 }

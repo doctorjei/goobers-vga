@@ -1,9 +1,12 @@
-#include <fstream.h>
-#include <dos.h>
+#include <fstream>
+#include <cstring>
+//#include <dos.h>
 #include "screen.h"
+#include "errors.h"
+#include "vga.h"
 
 pal palette[256];
-screen vga1(NULL), gameboard(NULL), video((unsigned char *)MK_FP(0xA000, 0));
+screen vga1(nullptr), gameboard(nullptr), video((unsigned char *) 0xA0000000);
 
 screen::screen(unsigned char *point)
 {
@@ -22,7 +25,8 @@ unsigned char screen::getpixel(short int x, short int y)
 
 void screen::wipe(unsigned char colnum)
 {
- _fmemset(data, colnum, 64000);
+ memset(data, colnum, 64000);
+// _fmemset(data, colnum, 64000);
 }
 
 void screen::copyto(screen &dest)
@@ -60,9 +64,9 @@ short int screen::allocate()
 
 long screen::readimage(char *filename, long seek)
 {
- ifstream infile;
+ std::ifstream infile;
 
- infile.open(filename, ios::binary);
+ infile.open(filename, std::ifstream::binary);
  if (!infile) file_error(filename);
  if (!infile.seekg(seek)) file_error(filename);
  if (!(allocate())) {infile.close(); memerr(2);}

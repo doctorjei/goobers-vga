@@ -9,7 +9,7 @@ struct animation
  char *changeme, value;
  animation *next, *previous;
  animation(picture *p, short int x1, short int y1, short int col, char val, char *chg);
-} *firstani, *lastani, *ani;
+};
 
 void savefile(windows *win);
 void loadfile(windows *win);
@@ -32,3 +32,7 @@ void getinfo();
 short int placegoob(short int x1, short int y1, short int x2, short int y2);
 short int checkplay();
 void fontwrite(screen *destin, unsigned char *text);
+
+// Replacement for Turbo C++  function to randomize seed
+void randomize();
+long random(long);

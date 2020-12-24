@@ -14,9 +14,9 @@ struct screen
  short int allocate();
  long readimage(char *filename, long seek);
  void freescreen();
-}
+};
 
 struct pal
 {
  char red, green, blue;
-}
+};

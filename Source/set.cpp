@@ -1,7 +1,11 @@
+#include <cstdlib>
+#include <cstring>
 #include "screen.h"
 #include "picture.h"
 #include "window.h"
 #include "tools.h"
+#include "errors.h"
+#include "vga.h"
 
 extern pal *palette;
 extern screen video;
@@ -12,12 +16,14 @@ extern windows menu;
 extern char *board;
 extern int nplay;
 
+extern animation *firstani, *lastani, *ani;
+
 void setdata()
 {
- if ((board = (char *)malloc(128)) == NULL) memerr(10);
+ if ((board = (char *)malloc(128)) == nullptr) memerr(10);
  memset(board, -1, 128);
- for (short int y = 0; y < 8; y++)
-  for (short int x = 0; x < 8; x++)
+ for (short y = 0; y < 8; y++)
+  for (short x = 0; x < 8; x++)
    board[x + (y << 3)] = -1;
 
  if (nplay == 2)
@@ -30,11 +36,11 @@ void setdata()
  if (nplay == 4)
   board[63] = board[62] = board[55] = 3;
 
- for (y = 0; y < 8; y++)
-  for (x = 0; x < 8; x++)
+ for (short y = 0; y < 8; y++)
+  for (short x = 0; x < 8; x++)
    board[x + (y << 3) + 64] = random(32);
 
- firstani = lastani = ani = NULL;
+ firstani = lastani = ani = nullptr;
  vga1.readimage("BOARD.DAT", 0);
  gameblock.readimage("BLOCK.DAT", 0);
  goober.readimage("GOOBER.DAT", 0);
@@ -48,15 +54,15 @@ void setdata()
  nes.readimage("JUMPNES.DAT", 0);
  font.readimage("FONT.DAT", 0);
  menu.getdata("WINDOW.DAT", 0);
- menu.object = menu.firstobject; menu.object->function = NULL;//save
- menu.object = menu.object->next; menu.object->function = NULL;//load
- menu.object = menu.object->next; menu.object->function = NULL;//new
+ menu.object = menu.firstobject; menu.object->function = nullptr;//save
+ menu.object = menu.object->next; menu.object->function = nullptr;//load
+ menu.object = menu.object->next; menu.object->function = nullptr;//new
  menu.object = menu.object->next; menu.object->function = quit;
  menu.object = menu.object->next; menu.object->function = closewindow;
  menu.object = menu.firstobject;
  loadpalette("PALETTE.DAT", 0, palette);
- for (y = 0; y < 8; y++)
-  for (x = 0; x < 8; x++)
+ for (short y = 0; y < 8; y++)
+  for (short x = 0; x < 8; x++)
    putgoober(x, y, 7, board[x + (y << 3)]);
  retrace();
  video.wipe(255);

@@ -1,20 +1,31 @@
 void mode(unsigned char screen_mode)
 {
- asm {mov ah, 0x00; mov al, [screen_mode]; int 0x10;}
+ asm
+ (
+  "mov $0x00, %%ah;"
+  "mov %[screen_mode], %%al;"
+  "int $0x10;"
+  : // Output variables (none)
+  : [screen_mode] "r" (screen_mode)
+  : "ah", "al"
+ );
 }
 
 void retrace()
 {
- l1: asm {
-       mov dx, 0x03DA;
-       in  al,dx;
-       and al,0x08;
-       jnz l1;
-     }
-
- l2: asm {
-       in  al,dx;
-       and al, 0x08;
-       jz  l2;
-     }
+ asm
+ (
+  "l1:"
+   "mov $0x03DA, %%dx;"
+   "in %%dx, %%al;"
+   "and $0x08, %%al;"
+   "jnz l1;"
+  "l2:"
+   "in %%dx, %%al;"
+   "and $0x08, %%al;"
+   "jz l2;"
+   :
+   :
+   : "al", "dx"
+ );
 }

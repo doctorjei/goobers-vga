@@ -1,5 +1,7 @@
+#include <iostream>
 #include "screen.h"
 #include "mouse.h"
+#include "vga.h"
 
 extern screen vga1;
 extern screen video;
@@ -18,11 +20,20 @@ mice::mice()
 
 void mice::initialize()
 {
- ifstream cursorfile;
+ std::ifstream cursorfile;
  long datasize;
  unsigned short int mousedata;
 
- asm {mov ax, 0x00; int 0x33; mov [mousedata], ax}
+ asm
+ (
+  "mov $0x00, %%ax;"
+  "int $0x33;"
+  "mov %%ax, %0;"
+  : "=r"(mousedata) // Output variable / value
+  : // Input variable / value (none)
+  : "ax" // Clobbered register
+ );
+
  if (!(mousedata==0xffff)) mouse_err();
  cursor.readimage("CURSOR.DAT", 0);
  background.xlength = cursor.xlength;
@@ -35,7 +46,7 @@ void mice::initialize()
 void mice::mouse_err()
 {
  mode(0x03);
- cout << "Error initializing mouse. Exiting.\r\n";
+ std::cout << "Error initializing mouse. Exiting.\r\n";
  exit(1);
 }
 
@@ -43,12 +54,16 @@ void mice::getmove()
 {
  short int movex=0, movey=0;
 
- asm {
-      mov ax, 0x0b
-      int 0x33
-      mov [movex], cx
-      mov [movey], dx
-     }
+ asm
+ (
+  "mov $0x0b, %%ax;"
+  "int $0x33;"
+  "mov %%cx, %[movex];"
+  "mov %%dx, %[movey];"
+  : [movex] "=&r" (movex), [movey] "=r" (movey) // Output variables (movex is "early clobber")
+  : // Input values (none)
+  : "ax", "cx", "dx"  // Clobbered registers
+ );
 
  movex = movex + xtotalmickeys;
  movey = movey + ytotalmickeys;
@@ -85,12 +100,17 @@ void mice::getbuttons()
 {
  short int new_l_press, new_r_press, new_l_release, new_r_release;
 
- asm {
-      mov ax, 0x05; mov bx, 0; int 0x33; mov [new_l_press], bx;
-      mov ax, 0x05; mov bx, 1; int 0x33; mov [new_r_press], bx;
-      mov ax, 0x06; mov bx, 0; int 0x33; mov [new_l_release], bx;
-      mov ax, 0x06; mov bx, 1; int 0x33; mov [new_r_release], bx;
-     }
+ asm
+ (
+  "mov $0x05, %%ax; mov $0, %%bx; int $0x33; mov %%bx, %[new_l_press];"
+  "mov $0x05, %%ax; mov $1, %%bx; int $0x33; mov %%bx, %[new_r_press];"
+  "mov $0x06, %%ax; mov $0, %%bx; int $0x33; mov %%bx, %[new_l_release];"
+  "mov $0x06, %%ax; mov $1, %%bx; int $0x33; mov %%bx, %[new_r_release];"
+  : [new_l_press] "=&r" (new_l_press), [new_r_press] "=&r" (new_r_press),
+    [new_l_release] "=&r" (new_l_release), [new_r_release] "=r" (new_r_release)
+  : // Input values (none)
+  : "ax", "bx"  // Clobbered registers
+ );
 
  l_presses = l_presses + new_l_press;
  r_presses = r_presses + new_r_press;

@@ -25,4 +25,4 @@ class windows
  void checkobject(objects *obj);
  void shutdown();
  void openwindow();
-}
+};
