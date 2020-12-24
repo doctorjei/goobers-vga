@@ -1,3 +1,5 @@
+#include <iostream.h>
+#include <stdlib.h>
 #include "vga.h"
 #include "errors.h"
 #include "screen.h"
@@ -12,16 +14,16 @@ void progloop();
 extern mice mouse;
 extern screen vga1;
 extern screen video;
-extern window menu;
+extern windows menu;
 
 extern unsigned short *internalclock;
-unsigned short oldtime;
+extern unsigned short oldtime;
 
 extern char *board;
 extern short int sx, sy;
 extern char gameover;
 
-void main()
+int main()
 {
  randomize();
  getinfo();
@@ -32,6 +34,7 @@ void main()
  fadein();
  mouse.background.getimage(mouse.x, mouse.y, 0, vga1);
  while(1) progloop();
+ return 0;
 }
 
 void progloop()

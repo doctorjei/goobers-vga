@@ -1,5 +1,9 @@
 #include <alloc.h>
+#include <stdlib.h>
+#include <string.h>
+#include <fstream.h>
 #include "picture.h"
+#include "errors.h"
 
 picture gameblock, goober, ns, nes, n, ne, nnw, n2, nne, ne2, font;
 

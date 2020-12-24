@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _WINDOW_H
+#define _WINDOW_H
 
 #include "picture.h"
 
@@ -25,4 +26,6 @@ class windows
  void checkobject(objects *obj);
  void shutdown();
  void openwindow();
-}
+};
+
+#endif

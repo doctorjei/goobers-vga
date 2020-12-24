@@ -1,5 +1,6 @@
 #include <iostream.h>
 #include <stdlib.h>
+#include "vga.h"
 
 void memerr(short int errornum)
 {

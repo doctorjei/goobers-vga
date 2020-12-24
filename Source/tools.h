@@ -9,7 +9,7 @@ struct animation
  char *changeme, value;
  animation *next, *previous;
  animation(picture *p, short int x1, short int y1, short int col, char val, char *chg);
-} *firstani, *lastani, *ani;
+};
 
 void savefile(windows *win);
 void loadfile(windows *win);

@@ -1,4 +1,8 @@
-#pragma once
+#ifndef _MOUSE_H
+#define _MOUSE_H
+
+#include <fstream.h>
+#include "picture.h"
 
 class mice
 {
@@ -23,3 +27,5 @@ class mice
  short int buttoncheck(unsigned short int check);
  void release();
 };
+
+#endif

@@ -1,5 +1,8 @@
+#include <iostream.h>
+#include <stdlib.h>
 #include "screen.h"
 #include "mouse.h"
+#include "vga.h"
 
 extern screen vga1;
 extern screen video;

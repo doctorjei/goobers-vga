@@ -1,5 +1,12 @@
+#include <stdlib.h>
 #include <conio.h>
+#include <string.h>
+#include <iostream.h>
+#include <fstream.h>
 #include "mouse.h"
+#include "tools.h"
+#include "vga.h"
+#include "errors.h"
 
 extern mice mouse;
 extern pal *palette;
@@ -16,6 +23,8 @@ char *board;
 short int sx = -1, sy = -1;
 short int cplay = 0, nplay = 1;
 char gameover = 0;
+
+animation *firstani, *lastani, *ani;
 
 animation::animation(picture *p, short int x1, short int y1, short int col, char val, char *chg)
 {

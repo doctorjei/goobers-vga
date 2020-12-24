@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _SCREEN_H
+#define _SCREEN_H
 
 struct screen
 {
@@ -14,9 +15,10 @@ struct screen
  short int allocate();
  long readimage(char *filename, long seek);
  void freescreen();
-}
+};
 
 struct pal
 {
  char red, green, blue;
-}
+};
+#endif

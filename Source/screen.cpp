@@ -1,6 +1,10 @@
 #include <fstream.h>
+#include <alloc.h>
 #include <dos.h>
+#include <string.h>
 #include "screen.h"
+#include "errors.h"
+#include "vga.h"
 
 pal palette[256];
 screen vga1(NULL), gameboard(NULL), video((unsigned char *)MK_FP(0xA000, 0));

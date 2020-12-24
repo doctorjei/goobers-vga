@@ -1,7 +1,10 @@
 #include <string.h>
+#include <alloc.h>
+#include <fstream.h>
 #include "screen.h"
 #include "mouse.h"
 #include "window.h"
+#include "errors.h"
 
 extern mice mouse;
 extern screen video;

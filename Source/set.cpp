@@ -1,7 +1,11 @@
+#include <stdlib.h>
+#include <string.h>
 #include "screen.h"
 #include "picture.h"
 #include "window.h"
 #include "tools.h"
+#include "errors.h"
+#include "vga.h"
 
 extern pal *palette;
 extern screen video;
@@ -12,12 +16,15 @@ extern windows menu;
 extern char *board;
 extern int nplay;
 
+extern animation *firstani, *lastani, *ani;
+
 void setdata()
 {
  if ((board = (char *)malloc(128)) == NULL) memerr(10);
  memset(board, -1, 128);
- for (short int y = 0; y < 8; y++)
-  for (short int x = 0; x < 8; x++)
+ short x, y;
+ for (y = 0; y < 8; y++)
+  for (x = 0; x < 8; x++)
    board[x + (y << 3)] = -1;
 
  if (nplay == 2)
