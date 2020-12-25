@@ -1,0 +1,5 @@
+History of Goobers
+----------------
+
+v.71b - First and only release. Some bugs, mostly incomplete code.
+	However, program is functional.
