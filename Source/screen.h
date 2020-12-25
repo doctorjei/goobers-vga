@@ -17,8 +17,15 @@ struct screen
  void freescreen();
 };
 
-struct pal
+struct color
 {
  char red, green, blue;
 };
+
+struct pal
+{
+ color colors[256];
+ long loadpalette(char *file, long seek);
+};
+
 #endif

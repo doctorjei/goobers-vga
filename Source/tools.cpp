@@ -9,7 +9,7 @@
 #include "errors.h"
 
 extern mice mouse;
-extern pal *palette;
+extern pal palette;
 extern screen video;
 extern screen vga1;
 extern screen gameboard;
@@ -66,31 +66,17 @@ void freememm()
  menu.shutdown();
 }
 
-long loadpalette(char *file, long seek, pal *colors)
-{
- ifstream infile;
-
- infile.open(file, ios::binary);
- if (!infile) {infile.close(); file_error(file);}
- infile.seekg(seek);
- if (!infile.read((unsigned char *)colors, 768))
- {infile.close(); file_error(file);}
- seek = infile.tellg();
- infile.close();
- return seek;
-}
-
 void fadeout()
 {
- pal tmp[256];
- memcpy(tmp, palette, 768);
+ pal tmp;
+ memcpy(tmp.colors, palette.colors, 768);
  for(short int rgb = 0; rgb < 64; rgb++)
  {
   for(short int cindex = 0; cindex < 256; cindex++)
   {
-   if (tmp[cindex].red > 0) tmp[cindex].red--;
-   if (tmp[cindex].green > 0) tmp[cindex].green--;
-   if (tmp[cindex].blue > 0) tmp[cindex].blue--;
+   if (tmp.colors[cindex].red > 0) tmp.colors[cindex].red--;
+   if (tmp.colors[cindex].green > 0) tmp.colors[cindex].green--;
+   if (tmp.colors[cindex].blue > 0) tmp.colors[cindex].blue--;
   }
   setpalette(tmp);
   retrace();
@@ -99,31 +85,31 @@ void fadeout()
 
 void fadein()
 {
- pal tmp[256];
- memset(tmp, 0, 768);
+ pal tmp;
+ memset(tmp.colors, 0, 768);
  for(short int rgb = 0; rgb < 64; rgb++)
  {
   for(short int cindex = 0; cindex < 256; cindex++)
   {
-   if (tmp[cindex].red < palette[cindex].red) tmp[cindex].red++;
-   if (tmp[cindex].green < palette[cindex].green) tmp[cindex].green++;
-   if (tmp[cindex].blue < palette[cindex].blue) tmp[cindex].blue++;
+   if (tmp.colors[cindex].red < palette.colors[cindex].red) tmp.colors[cindex].red++;
+   if (tmp.colors[cindex].green < palette.colors[cindex].green) tmp.colors[cindex].green++;
+   if (tmp.colors[cindex].blue < palette.colors[cindex].blue) tmp.colors[cindex].blue++;
   }
  retrace();
  setpalette(tmp);
  }
 }
 
-void setpalette(pal *colors)
+void setpalette(pal &setto)
 {
  unsigned char col = 0;
 
  do
  {
   outp(0x03C8, col);
-  outp(0x03C9, colors[col].red);
-  outp(0x03C9, colors[col].green);
-  outp(0x03C9, colors[col].blue);
+  outp(0x03C9, setto.colors[col].red);
+  outp(0x03C9, setto.colors[col].green);
+  outp(0x03C9, setto.colors[col].blue);
   col++;
  } while (col != 0);
 }

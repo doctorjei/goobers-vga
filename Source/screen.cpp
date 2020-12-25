@@ -6,7 +6,7 @@
 #include "errors.h"
 #include "vga.h"
 
-pal palette[256];
+pal palette;
 screen vga1(NULL), gameboard(NULL), video((unsigned char *)MK_FP(0xA000, 0));
 
 screen::screen(unsigned char *point)
@@ -80,5 +80,19 @@ long screen::readimage(char *filename, long seek)
 void screen::freescreen()
 {
  free(data);
+}
+
+long pal::loadpalette(char *file, long seek)
+{
+ ifstream infile;
+
+ infile.open(file, ios::binary);
+ if (!infile) {infile.close(); file_error(file);}
+ infile.seekg(seek);
+ if (!infile.read((unsigned char *)colors, 768))
+ {infile.close(); file_error(file);}
+ seek = infile.tellg();
+ infile.close();
+ return seek;
 }
 

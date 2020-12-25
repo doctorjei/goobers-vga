@@ -1,4 +1,6 @@
+#include <iostream.h>
 #include <stdlib.h>
+
 #include <string.h>
 #include "screen.h"
 #include "picture.h"
@@ -7,7 +9,7 @@
 #include "errors.h"
 #include "vga.h"
 
-extern pal *palette;
+extern pal palette;
 extern screen video;
 extern screen vga1;
 extern picture gameblock, goober, ns, nes, n, ne, nnw, n2, nne, ne2, font;
@@ -61,10 +63,13 @@ void setdata()
  menu.object = menu.object->next; menu.object->function = quit;
  menu.object = menu.object->next; menu.object->function = closewindow;
  menu.object = menu.firstobject;
- loadpalette("PALETTE.DAT", 0, palette);
+ cout << "Window done\n";
+ palette.loadpalette("PALETTE.DAT", 0);
+ cout << "Palette done\n";
  for (y = 0; y < 8; y++)
   for (x = 0; x < 8; x++)
    putgoober(x, y, 7, board[x + (y << 3)]);
+ cout << "After put\n";
  retrace();
  video.wipe(255);
 }
